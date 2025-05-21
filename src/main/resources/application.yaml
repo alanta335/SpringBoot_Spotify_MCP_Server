@@ -1,0 +1,21 @@
+#logging:
+#  level:
+#    root: off
+server:
+  port: 8081
+spring:
+  application:
+    name: spotify-mcp-server
+  #  main:
+  #    web-application-type: none
+  #    banner-mode: off
+  ai:
+    mcp:
+      server:
+        name: spotify-mcp-server
+        version: 1.0.0S
+        type: SYNC
+        #        stdio: true
+        enabled: true
+        sse-message-endpoint: /mcp/messages
+        sse-endpoint: /sse
