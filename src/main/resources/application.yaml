@@ -13,7 +13,7 @@ spring:
     mcp:
       server:
         name: spotify-mcp-server
-        version: 1.0.0S
+        version: 1.0.0
         type: SYNC
         #        stdio: true
         enabled: true
