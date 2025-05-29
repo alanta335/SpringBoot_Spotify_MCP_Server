@@ -19,3 +19,6 @@ spring:
         enabled: true
         sse-message-endpoint: /mcp/messages
         sse-endpoint: /sse
+spotify:
+  api:
+    token: ${SPOTIFY_API_TOKEN}
