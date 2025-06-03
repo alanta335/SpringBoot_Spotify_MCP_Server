@@ -41,4 +41,4 @@ JAVA_HOME=$(/usr/libexec/java_home)
 echo "✅ Custom JRE created at $CUSTOM_JRE_DIR"
 
 #Custom JRE can be used to run the application
-#target/custom-jre/bin/java -jar target/randstad-search-and-match-api-2.2.0-SNAPSHOT.jar
+target/custom-jre/bin/java -jar target/randstad-search-and-match-api-2.2.0-SNAPSHOT.jar
