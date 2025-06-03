@@ -6,6 +6,8 @@ server:
 spring:
   application:
     name: spotify-mcp-server
+  config:
+    import: optional:file:.env[.properties]
   #  main:
   #    web-application-type: none
   #    banner-mode: off
