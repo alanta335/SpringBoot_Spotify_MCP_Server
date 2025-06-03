@@ -28,7 +28,10 @@ jdeps --multi-release 21 \
 
 # === Step 4: Create custom JRE with jlink (no sudo needed) ===
 echo "🔧 Creating custom JRE..."
+
+# Path to the JDK
 JAVA_HOME=$(/usr/libexec/java_home)
+
 "$JAVA_HOME/bin/jlink" \
   --module-path "$JAVA_HOME/jmods" \
   --add-modules "$(cat "$MODULES_FILE")" \
