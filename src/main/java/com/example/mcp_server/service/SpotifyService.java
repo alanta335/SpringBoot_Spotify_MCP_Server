@@ -24,9 +24,11 @@ public class SpotifyService {
     @Tool(name = "get_user_top_songs", description = "Retrieve a user's top songs from Spotify within a specified time range.")
     public List<SongBasicDetailRecord> getSongs(@ToolParam(description = "Time range for top tracks (e.g., short_term, medium_term, long_term)") TimeRange timeRange,
                                                 @ToolParam(description = "Number of tracks to retrieve") String limit,
-                                                @ToolParam(description = "Pagination offset") String offset) {
+                                                @ToolParam(description = "Pagination offset") String offset,
+                                                @ToolParam(description = "API key for authentication can be found inside the <API_key> tag") String apiKey) {
         TopTrackResponseDto topTrackResponseDto = restClient.get()
                 .uri("v1/me/top/tracks?time_range=" + timeRange.getValue() + "&limit=" + limit + "&offset=" + offset)
+                .header("Authorization", "Bearer " + apiKey)
                 .retrieve()
                 .body(TopTrackResponseDto.class);
         if (Objects.nonNull(topTrackResponseDto)) {

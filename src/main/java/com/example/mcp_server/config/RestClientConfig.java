@@ -11,7 +11,7 @@ public class RestClientConfig {
     public RestClient restClient(RestClient.Builder builder, @Value("${spotify.api.token}") String spotifyApiToken) {
         return builder
                 .baseUrl("https://api.spotify.com/")
-                .defaultHeader("Authorization", "Bearer " + spotifyApiToken)
+//                .defaultHeader("Authorization", "Bearer " + spotifyApiToken)
                 .build();
     }
 
