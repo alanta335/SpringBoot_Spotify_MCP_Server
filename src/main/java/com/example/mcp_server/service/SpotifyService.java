@@ -45,7 +45,7 @@ public class SpotifyService {
         return null;
     }
 
-    @Tool(name = "playback_controller", description = "Control playback of Spotify tracks.")
+    @Tool(name = "playback_controller", description = "Control playback of the current Spotify song tracks.")
     public String controlPlayBack(@ToolParam(description = "Playback state to apply, Can have value of play or pause") PlayBackState playBackState) {
         String action = playBackState.getState().toLowerCase();
         String uri = UriComponentsBuilder.fromPath("/v1/me/player/{action}")
