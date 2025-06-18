@@ -1,5 +1,6 @@
 package com.example.mcp_server.service;
 
+import com.example.mcp_server.enumeration.PlayBackState;
 import com.example.mcp_server.enumeration.TimeRange;
 import com.example.mcp_server.mapper.SpotifyMapper;
 import com.example.mcp_server.model.domain.SongBasicDetailRecord;
@@ -9,8 +10,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.tool.annotation.Tool;
 import org.springframework.ai.tool.annotation.ToolParam;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestClient;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
 import java.util.Objects;
@@ -38,5 +43,35 @@ public class SpotifyService {
             return spotifyMapper.mapToSongBasicDetailRecord(topTrackResponseDto.items());
         }
         return null;
+    }
+
+    @Tool(name = "playback_controller", description = "Control playback of Spotify tracks.")
+    public String controlPlayBack(@ToolParam(description = "Playback state to apply, Can have value of play or pause") PlayBackState playBackState) {
+        String action = playBackState.getState().toLowerCase();
+        String uri = UriComponentsBuilder.fromPath("/v1/me/player/{action}")
+                .buildAndExpand(action)
+                .toString();
+        try {
+            ResponseEntity<Void> response = restClient.put()
+                    .uri(uri)
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + spotifyApiToken)
+                    .retrieve()
+                    .toBodilessEntity();
+
+            if (response.getStatusCode().is2xxSuccessful()) {
+                log.info("Playback '{}' executed successfully", action);
+                return "Playback " + action + " command sent successfully.";
+            } else {
+                log.warn("Spotify API returned non-success: {}", response.getStatusCode());
+                return "Spotify API returned: " + response.getStatusCode();
+            }
+
+        } catch (HttpStatusCodeException ex) {
+            log.error("Spotify API error: {}", ex.getStatusCode(), ex);
+            return "error occurred: " + ex.getMessage();
+        } catch (Exception ex) {
+            log.error("Unexpected error during playback '{}': {}", action, ex.getMessage(), ex);
+            return "Failed to control playback: " + ex.getMessage();
+        }
     }
 }
