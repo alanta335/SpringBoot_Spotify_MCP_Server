@@ -3,10 +3,13 @@ package com.example.mcp_server.service;
 import com.example.mcp_server.enumeration.PlayBackState;
 import com.example.mcp_server.enumeration.TimeRange;
 import com.example.mcp_server.mapper.SpotifyMapper;
+import com.example.mcp_server.model.domain.CurrentSongDetail;
 import com.example.mcp_server.model.domain.SongBasicDetailRecord;
+import com.example.mcp_server.model.response.CurrentSongDetailRecordDto;
 import com.example.mcp_server.model.response.TopTrackResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.ai.chat.model.ToolContext;
 import org.springframework.ai.tool.annotation.Tool;
 import org.springframework.ai.tool.annotation.ToolParam;
 import org.springframework.beans.factory.annotation.Value;
@@ -45,8 +48,10 @@ public class SpotifyService {
         return null;
     }
 
-    @Tool(name = "playback_controller", description = "Control playback of the current Spotify song tracks.")
-    public String controlPlayBack(@ToolParam(description = "Playback state to apply, Can have value of play or pause") PlayBackState playBackState) {
+    @Tool(name = "playback_controller", description = "Control playback of the current song tracks.")
+    public String controlPlayBack(@ToolParam(description = "Playback state to apply, Can have value of play or pause") PlayBackState playBackState,
+                                  ToolContext toolContext) {
+//        String apiKey = toolContext.getContext().get("apiKey").toString();
         String action = playBackState.getState().toLowerCase();
         String uri = UriComponentsBuilder.fromPath("/v1/me/player/{action}")
                 .buildAndExpand(action)
@@ -72,6 +77,32 @@ public class SpotifyService {
         } catch (Exception ex) {
             log.error("Unexpected error during playback '{}': {}", action, ex.getMessage(), ex);
             return "Failed to control playback: " + ex.getMessage();
+        }
+    }
+
+    @Tool(name = "get_current_song_details", description = "Fetch details about the currently playing song on the user's Spotify account.")
+    public CurrentSongDetail getCurrentPlayingSongDetails() {
+
+        try {
+            ResponseEntity<CurrentSongDetailRecordDto> response = restClient.get()
+                    .uri("/v1/me/player/currently-playing")
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + spotifyApiToken)
+                    .retrieve()
+                    .toEntity(CurrentSongDetailRecordDto.class);
+
+            if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
+                return spotifyMapper.mapCurrentSongDetailRecordDtoToCurrentSongDetail(response.getBody());
+            } else {
+                log.warn("Spotify API returned non-success: {}", response.getStatusCode());
+                return null;
+            }
+
+        } catch (HttpStatusCodeException ex) {
+            log.error("Spotify API error: {}", ex.getStatusCode(), ex);
+            return null;
+        } catch (Exception ex) {
+            log.error("Unexpected error while fetching current song details: {}", ex.getMessage(), ex);
+            return null;
         }
     }
 }

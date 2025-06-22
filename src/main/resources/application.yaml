@@ -1,6 +1,6 @@
-#logging:
-#  level:
-#    root: off
+logging:
+  level:
+    root: trace
 server:
   port: 8081
 spring:

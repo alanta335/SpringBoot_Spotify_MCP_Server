@@ -1,6 +1,8 @@
 package com.example.mcp_server.mapper;
 
+import com.example.mcp_server.model.domain.CurrentSongDetail;
 import com.example.mcp_server.model.domain.SongBasicDetailRecord;
+import com.example.mcp_server.model.response.CurrentSongDetailRecordDto;
 import com.example.mcp_server.model.response.TopTrackResponseDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -26,4 +28,6 @@ public interface SpotifyMapper {
     @Mapping(target = "songId", source = "id")
     @Mapping(target = "albumId", source = "album.id")
     SongBasicDetailRecord songToSongBasicDetailRecord(TopTrackResponseDto.Song song);
+
+    CurrentSongDetail mapCurrentSongDetailRecordDtoToCurrentSongDetail(CurrentSongDetailRecordDto currentSongDetailRecordDto);
 }
