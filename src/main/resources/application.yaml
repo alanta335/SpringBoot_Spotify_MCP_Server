@@ -1,6 +1,6 @@
-logging:
-  level:
-    root: trace
+#logging:
+#  level:
+#    root: trace
 server:
   port: 8081
 spring:
@@ -17,7 +17,7 @@ spring:
         name: spotify-mcp-server
         version: 1.0.0
         type: SYNC
-        #        stdio: true
+        stdio: false
         enabled: true
         sse-message-endpoint: /mcp/messages
         sse-endpoint: /sse
