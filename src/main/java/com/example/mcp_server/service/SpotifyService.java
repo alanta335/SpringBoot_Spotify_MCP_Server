@@ -3,16 +3,15 @@ package com.example.mcp_server.service;
 import com.example.mcp_server.enumeration.PlayBackState;
 import com.example.mcp_server.enumeration.TimeRange;
 import com.example.mcp_server.mapper.SpotifyMapper;
+import com.example.mcp_server.model.context.UserThreadLocalHolder;
 import com.example.mcp_server.model.domain.CurrentSongDetail;
 import com.example.mcp_server.model.domain.SongBasicDetailRecord;
 import com.example.mcp_server.model.response.CurrentSongDetailRecordDto;
 import com.example.mcp_server.model.response.TopTrackResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.ai.chat.model.ToolContext;
 import org.springframework.ai.tool.annotation.Tool;
 import org.springframework.ai.tool.annotation.ToolParam;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -30,16 +29,13 @@ public class SpotifyService {
     private final RestClient restClient;
     private final SpotifyMapper spotifyMapper;
 
-    @Value("${spotify.api.token}")
-    private String spotifyApiToken;
-
     @Tool(name = "get_user_top_songs", description = "Retrieve a user's top songs from Spotify within a specified time range.")
     public List<SongBasicDetailRecord> getSongs(@ToolParam(description = "Time range for top tracks (e.g., short_term, medium_term, long_term)") TimeRange timeRange,
                                                 @ToolParam(description = "Number of tracks to retrieve") String limit,
                                                 @ToolParam(description = "Pagination offset") String offset) {
         TopTrackResponseDto topTrackResponseDto = restClient.get()
                 .uri("v1/me/top/tracks?time_range=" + timeRange.getValue() + "&limit=" + limit + "&offset=" + offset)
-                .header("Authorization", "Bearer " + spotifyApiToken)
+                .header(HttpHeaders.AUTHORIZATION, getAPIKeyFromThreadLocal())
                 .retrieve()
                 .body(TopTrackResponseDto.class);
         if (Objects.nonNull(topTrackResponseDto)) {
@@ -49,9 +45,7 @@ public class SpotifyService {
     }
 
     @Tool(name = "playback_controller", description = "Control playback of the current song tracks.")
-    public String controlPlayBack(@ToolParam(description = "Playback state to apply, Can have value of play or pause") PlayBackState playBackState,
-                                  ToolContext toolContext) {
-//        String apiKey = toolContext.getContext().get("apiKey").toString();
+    public String controlPlayBack(@ToolParam(description = "Playback state to apply, Can have value of play or pause") PlayBackState playBackState) {
         String action = playBackState.getState().toLowerCase();
         String uri = UriComponentsBuilder.fromPath("/v1/me/player/{action}")
                 .buildAndExpand(action)
@@ -59,7 +53,7 @@ public class SpotifyService {
         try {
             ResponseEntity<Void> response = restClient.put()
                     .uri(uri)
-                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + spotifyApiToken)
+                    .header(HttpHeaders.AUTHORIZATION, getAPIKeyFromThreadLocal())
                     .retrieve()
                     .toBodilessEntity();
 
@@ -80,13 +74,18 @@ public class SpotifyService {
         }
     }
 
+    private String getAPIKeyFromThreadLocal() {
+        log.info("Thread [{}] name: ",
+                Thread.currentThread().getName());
+        return "Bearer " + UserThreadLocalHolder.get().apiKey();
+    }
+
     @Tool(name = "get_current_song_details", description = "Fetch details about the currently playing song on the user's Spotify account.")
     public CurrentSongDetail getCurrentPlayingSongDetails() {
-
         try {
             ResponseEntity<CurrentSongDetailRecordDto> response = restClient.get()
                     .uri("/v1/me/player/currently-playing")
-                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + spotifyApiToken)
+                    .header(HttpHeaders.AUTHORIZATION, getAPIKeyFromThreadLocal())
                     .retrieve()
                     .toEntity(CurrentSongDetailRecordDto.class);
 
