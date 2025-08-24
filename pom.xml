@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.example</groupId>
-    <artifactId>mcp-server</artifactId>
+    <artifactId>mcp_server</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>mcp-server</name>
     <description>Demo project for Spring Boot</description>
