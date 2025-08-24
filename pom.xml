@@ -13,28 +13,6 @@
     <version>0.0.1-SNAPSHOT</version>
     <name>mcp-server</name>
     <description>Demo project for Spring Boot</description>
-    <!--    <url>https://github.com/alanta335/SpringBoot_Spotify_MCP_Server</url>-->
-    <!--    <licenses>-->
-    <!--        <license>-->
-    <!--            <name>Apache License, Version 2.0</name>-->
-    <!--            <url>https://www.apache.org/licenses/LICENSE-2.0</url>-->
-    <!--            <distribution>repo</distribution>-->
-    <!--        </license>-->
-    <!--    </licenses>-->
-    <!--    <developers>-->
-    <!--        <developer>-->
-    <!--            <id>alanta335</id>-->
-    <!--            <name>Alanta</name>-->
-    <!--            <email>alanta335@gmail.com</email>-->
-    <!--        </developer>-->
-    <!--    </developers>-->
-    <!--    <scm>-->
-    <!--        <connection>scm:git:https://github.com/alanta335/SpringBoot_Spotify_MCP_Server.git</connection>-->
-    <!--        <developerConnection>scm:git:ssh://git@github.com/alanta335/SpringBoot_Spotify_MCP_Server.git-->
-    <!--        </developerConnection>-->
-    <!--        <tag>HEAD</tag>-->
-    <!--        <url>https://github.com/alanta335/SpringBoot_Spotify_MCP_Server.git</url>-->
-    <!--    </scm>-->
     <properties>
         <java.version>21</java.version>
         <spring-ai.version>1.0.1</spring-ai.version>

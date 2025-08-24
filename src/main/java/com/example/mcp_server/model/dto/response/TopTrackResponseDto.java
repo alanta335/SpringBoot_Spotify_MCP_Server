@@ -1,4 +1,4 @@
-package com.example.mcp_server.model.response;
+package com.example.mcp_server.model.dto.response;
 
 import java.util.List;
 

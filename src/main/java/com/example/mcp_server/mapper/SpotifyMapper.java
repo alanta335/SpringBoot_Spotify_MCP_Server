@@ -2,8 +2,8 @@ package com.example.mcp_server.mapper;
 
 import com.example.mcp_server.model.domain.CurrentSongDetail;
 import com.example.mcp_server.model.domain.SongBasicDetailRecord;
-import com.example.mcp_server.model.response.CurrentSongDetailRecordDto;
-import com.example.mcp_server.model.response.TopTrackResponseDto;
+import com.example.mcp_server.model.dto.response.CurrentSongDetailRecordDto;
+import com.example.mcp_server.model.dto.response.TopTrackResponseDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
