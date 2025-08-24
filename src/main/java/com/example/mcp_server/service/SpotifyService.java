@@ -75,8 +75,6 @@ public class SpotifyService {
     }
 
     private String getAPIKeyFromThreadLocal() {
-        log.info("Thread [{}] name: ",
-                Thread.currentThread().getName());
         return "Bearer " + UserThreadLocalHolder.get().apiKey();
     }
 
